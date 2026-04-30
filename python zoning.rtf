@@ -6,45 +6,45 @@
 \pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
 
 \f0\fs24 \cf0 #!/usr/bin/env python3\
-"""\
+"""
 Prompts for a single VSAN, then repeatedly collects zone names and their \
 corresponding Excel row members. Writes all zones to a formatted text file.\
-"""\
-\
-import pandas as pd\
-import os\
-import sys\
-\
+"""
+
+import pandas as pd
+import os
+import sys
+
 def main():\
     # 1. Prompt for VSAN (single value for the entire configuration)\
-    while True:\
+    while True:
         vsan_input = input("Enter the VSAN number: ").strip()\
-        try:\
+        try:
             vsan = int(vsan_input)\
             if 1 <= vsan <= 4094:\
-                break\
-            print("\uc0\u9888 \u65039   VSAN must be between 1 and 4094. Please try again.")\
+                break
+            print("VSAN must be between 1 and 4094. Please try again.")\
         except ValueError:\
-            print("\uc0\u9888 \u65039   Invalid input. Please enter a valid integer.")\
-\
-    # 2. Prompt for Excel file path\
-    excel_path = input("Enter the path to the Excel file: ").strip()\
+            print("Invalid input. Please enter a valid integer.")\
+
+    # 2. Prompt for Excel file path
+    excel_path = input("Enter the path to the Excel file: ").strip()
     while not os.path.exists(excel_path):\
-        print("\uc0\u9888 \u65039   File not found. Please check the path and try again.")\
-        excel_path = input("Enter the path to the Excel file: ").strip()\
-\
-    # 3. Read Excel file once\
-    try:\
-        df = pd.read_excel(excel_path, engine='openpyxl')\
-    except Exception as e:\
-        print(f"\uc0\u10060  Error reading Excel file: \{e\}")\
-        sys.exit(1)\
-\
-    # Show DataFrame with 0-based indices for easy reference\
-    print("\\n\uc0\u55357 \u56522  Excel Data (Row indices shown on the left):")\
-    print(df.to_string())\
-    print(f"\uc0\u9989  Total data rows: \{len(df)\} (indices: 0 to \{len(df)-1\})\\n")\
-\
+        print("File not found. Please check the path and try again.")
+        excel_path = input("Enter the path to the Excel file: ").strip()
+
+    # 3. Read Excel file once
+    try:
+        df = pd.read_excel(excel_path, engine='openpyxl')
+    except Exception as e:
+        print(f"Error reading Excel file: \{e\}")
+        sys.exit(1)
+
+    # Show DataFrame with 0-based indices for easy reference
+    print("\n Excel Data (Row indices shown on the left):")
+    print(df.to_string())
+    print(f"\uc0\u9989  Total data rows: \{len(df)\} (indices: 0 to \{len(df)-1\})\\n")
+
     # 4. Collect zones and their members\
     zone_configs = []\
     while True:\
