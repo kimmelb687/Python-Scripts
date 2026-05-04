@@ -25,33 +25,33 @@ def parse_row_indices(input_str, max_index):
         if '-' in part:
             range_parts = [p.strip() for p in part.split('-')]
             if len(range_parts) != 2:
-                print("⚠️  Invalid range format. Use 'start-end'.")
+                print("Invalid range format. Use 'start-end'.")
                 return None
             try:
                 start, end = int(range_parts[0]), int(range_parts[1])
                 if start > end:
-                    print(f"⚠️  Invalid range: start ({start}) must be <= end ({end}).")
+                    print(f"Invalid range: start ({start}) must be <= end ({end}).")
                     return None
                 if start < 0 or end > max_index:
-                    print(f"⚠️  Range out of bounds. Valid indices: 0 to {max_index}.")
+                    print(f"Range out of bounds. Valid indices: 0 to {max_index}.")
                     return None
                 indices.update(range(start, end + 1))
             except ValueError:
-                print("⚠️  Invalid range format. Please use integers (e.g., 1-3).")
+                print("Invalid range format. Please use integers (e.g., 1-3).")
                 return None
         else:
             try:
                 idx = int(part)
                 if idx < 0 or idx > max_index:
-                    print(f"⚠️  Index {idx} out of bounds. Valid indices: 0 to {max_index}.")
+                    print(f"Index {idx} out of bounds. Valid indices: 0 to {max_index}.")
                     return None
                 indices.add(idx)
             except ValueError:
-                print("⚠️  Invalid input. Please enter integers or ranges.")
+                print("Invalid input. Please enter integers or ranges.")
                 return None
                 
     if not indices:
-        print("⚠️  Please enter at least one row index or range.")
+        print("Please enter at least one row index or range.")
         return None
         
     return sorted(indices)
@@ -64,28 +64,28 @@ def main():
             vsan = int(vsan_input)
             if 1 <= vsan <= 4094:
                 break
-            print("⚠️  VSAN must be between 1 and 4094. Please try again.")
+            print("VSAN must be between 1 and 4094. Please try again.")
         except ValueError:
-            print("⚠️  Invalid input. Please enter a valid integer.")
+            print("Invalid input. Please enter a valid integer.")
 
     # 2. Prompt for Excel file path
     excel_path = input("Enter the path to the Excel file: ").strip()
     while not os.path.exists(excel_path):
-        print("⚠️  File not found. Please check the path and try again.")
+        print("File not found. Please check the path and try again.")
         excel_path = input("Enter the path to the Excel file: ").strip()
 
     # 3. Import Excel sheet using pandas
     try:
         df = pd.read_excel(excel_path, engine='openpyxl')
         if df.empty:
-            print("❌ Excel file contains no data.")
+            print("Excel file contains no data.")
             sys.exit(1)
     except Exception as e:
-        print(f"❌ Error reading Excel file: {e}")
+        print(f"Error reading Excel file: {e}")
         sys.exit(1)
 
     # 4. Prompt for column names
-    print(f"\n📋 Available columns in sheet: {list(df.columns)}")
+    print(f"\nAvailable columns in sheet: {list(df.columns)}")
     print("Enter column names for the 'member' command:")
     col_a_mem = input("  First value (colA): ").strip()
     col_b_mem = input("  Second value (colB): ").strip()
@@ -100,20 +100,20 @@ def main():
     all_cols = [col_a_mem, col_b_mem, col_d_mem, col_a_da, col_b_da, col_c_da]
     missing = [c for c in all_cols if c not in df.columns]
     if missing:
-        print(f"❌ Missing columns in Excel file: {missing}")
+        print(f"Missing columns in Excel file: {missing}")
         sys.exit(1)
 
     # 5. Display DataFrame for row selection reference
-    print("\n📊 Excel Data (Row indices shown on the left):")
+    print("\nExcel Data (Row indices shown on the left):")
     print(df.to_string())
-    print(f"✅ Total data rows: {len(df)} (indices: 0 to {len(df)-1})\n")
+    print(f"Total data rows: {len(df)} (indices: 0 to {len(df)-1})\n")
 
     # 6. Collect zones and their members
     zone_configs = []
     while True:
         zone_name = input("Enter the zone name: ").strip()
         while not zone_name:
-            print("⚠️  Zone name cannot be empty. Please try again.")
+            print("Zone name cannot be empty. Please try again.")
             zone_name = input("Enter the zone name: ").strip()
 
         while True:
@@ -149,7 +149,7 @@ def main():
             another = input("\nDo you want to add another zone? (yes/no): ").strip().lower()
             if another in ('yes', 'no', 'y', 'n'):
                 break
-            print("⚠️  Please enter 'yes' or 'no'.")
+            print("Please enter 'yes' or 'no'.")
         if another in ('no', 'n'):
             break
 
@@ -166,9 +166,9 @@ def main():
                     f.write(f"{member}\n")
                 f.write("-" * 60 + "\n")
                 
-        print(f"✅ Successfully saved {len(zone_configs)} zone(s) to {output_file}")
+        print(f"Successfully saved {len(zone_configs)} zone(s) to {output_file}")
     except IOError as e:
-        print(f"❌ Error writing to file: {e}")
+        print(f"Error writing to file: {e}")
 
 if __name__ == "__main__":
     main()
